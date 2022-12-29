@@ -10,7 +10,7 @@ const {
   brandSchema,
 } = require("../../validators/allValidator");
 
-exports.addProduct = async (req, res) => {
+exports.addProduct = async (req, res, next) => {
   try {
     const data = req.body;
     const { error } = productSchema.validate(req.body);
@@ -18,17 +18,23 @@ exports.addProduct = async (req, res) => {
       res.status(400).send(error.details[0].message);
       return;
     } else {
-      const addProduct = await product.create(data);
-      if (addProduct) {
-        return res.status(201).json({
-          status: 1,
-          message: "Add product",
-        });
+      const addproduct = await product.exists({
+        productName: req.body.productName,
+      });
+      if (addproduct) {
+        return next(
+          CustomErrorHandler.alreadyExist("This product is already add!")
+        );
       } else {
-        return res.status(400).json({
-          status: 0,
-          message: "not add",
-        });
+        const addProduct = await product.create(data);
+        if (addProduct) {
+          return res.status(201).json({
+            status: 1,
+            message: "Add product",
+          });
+        } else {
+          return next(CustomErrorHandler.sameError("Not add prouct"));
+        }
       }
     }
   } catch (error) {
@@ -132,7 +138,7 @@ exports.deleteproduct = async (req, res) => {
   }
 };
 //category
-exports.addcategory = async (req, res) => {
+exports.addcategory = async (req, res, next) => {
   try {
     const data = req.body;
     const { error } = categorySchema.validate(req.body);
@@ -140,17 +146,23 @@ exports.addcategory = async (req, res) => {
       res.status(400).send(error.details[0].message);
       return;
     } else {
-      const addProduct = await category.create(data);
-      if (addProduct) {
-        return res.status(201).json({
-          status: 1,
-          message: "Add category",
-        });
+      const addcategory = await category.exists({
+        categoryName: req.body.categoryName,
+      });
+      if (addcategory) {
+        return next(
+          CustomErrorHandler.alreadyExist("This category is already add!")
+        );
       } else {
-        return res.status(400).json({
-          status: 0,
-          message: "not add",
-        });
+        const addProduct = await category.create(data);
+        if (addProduct) {
+          return res.status(201).json({
+            status: 1,
+            message: "Add category",
+          });
+        } else {
+          return next(CustomErrorHandler.sameError("Not add category"));
+        }
       }
     }
   } catch (error) {
@@ -203,7 +215,7 @@ exports.getOnecategory = async (req, res, next) => {
   }
 };
 
-exports.addsubCategory = async (req, res) => {
+exports.addsubCategory = async (req, res, next) => {
   try {
     const data = req.body;
     const { error } = subCategorySchema.validate(req.body);
@@ -211,17 +223,25 @@ exports.addsubCategory = async (req, res) => {
       res.status(400).send(error.details[0].message);
       return;
     } else {
-      const addProduct = await subCategory.create(data);
-      if (addProduct) {
-        return res.status(201).json({
-          status: 1,
-          message: "Add subCategory",
-        });
+      const addsubCategory = await subCategory.exists({
+        subCategoryName: req.body.subCategoryName,
+      });
+      if (addsubCategory) {
+        return next(
+          CustomErrorHandler.alreadyExist(
+            "This subCategoryName is already add!"
+          )
+        );
       } else {
-        return res.status(400).json({
-          status: 0,
-          message: "not add",
-        });
+        const addProduct = await subCategory.create(data);
+        if (addProduct) {
+          return res.status(201).json({
+            status: 1,
+            message: "Add subCategory",
+          });
+        } else {
+          return next(CustomErrorHandler.sameError("Not add subCategory"));
+        }
       }
     }
   } catch (error) {
@@ -259,7 +279,7 @@ exports.getAllsubCategory = async (req, res, next) => {
   }
 };
 
-exports.addbrand = async (req, res) => {
+exports.addbrand = async (req, res, next) => {
   try {
     const data = req.body;
     const { error } = brandSchema.validate(req.body);
@@ -267,17 +287,23 @@ exports.addbrand = async (req, res) => {
       res.status(400).send(error.details[0].message);
       return;
     } else {
-      const addProduct = await brand.create(data);
-      if (addProduct) {
-        return res.status(201).json({
-          status: 1,
-          message: "Add brand",
-        });
+      const addbrand = await brand.exists({
+        brandName: req.body.brandName,
+      });
+      if (addbrand) {
+        return next(
+          CustomErrorHandler.alreadyExist("This brand is already add!")
+        );
       } else {
-        return res.status(400).json({
-          status: 0,
-          message: "not add",
-        });
+        const addProduct = await brand.create(data);
+        if (addProduct) {
+          return res.status(201).json({
+            status: 1,
+            message: "Add brand",
+          });
+        } else {
+          return next(CustomErrorHandler.sameError("Not add brand"));
+        }
       }
     }
   } catch (error) {
