@@ -18,7 +18,7 @@ const {
 router.post("/addProduct", addProduct);
 router.get("/getAlladdProduct", getAlladdProduct);
 router.get("/getOneProduct/:id", getOneProduct);
-router.put("/updateSubscription/:id", updateproduct);
+router.put("/updateproduct/:id", updateproduct);
 router.delete("/deleteproduct/:id", deleteproduct);
 router.post("/addcategory", addcategory);
 router.get("/getAllcategory", getAllcategory);
