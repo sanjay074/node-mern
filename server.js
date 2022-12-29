@@ -9,7 +9,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 app.get("/", (req, res) => {
-  res.send("<h1>HI developer 👇👇👇/h1>");
+  res.send("<h1>HI developer 👇👇👇</h1>");
 });
 
 mongoose
