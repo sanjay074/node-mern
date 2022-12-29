@@ -137,7 +137,7 @@ exports.deleteproduct = async (req, res) => {
     });
   }
 };
-//category
+
 exports.addcategory = async (req, res, next) => {
   try {
     const data = req.body;
