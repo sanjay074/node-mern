@@ -41,7 +41,7 @@ const productSchema = new Schema(
     size: {
       type: Array,
     },
-    qunantitiy: {
+    quantity: {
       type: Number,
     },
     sellingPrice: {
