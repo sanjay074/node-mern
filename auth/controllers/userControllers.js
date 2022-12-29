@@ -1,8 +1,12 @@
 const product = require("../models/product");
 const category = require("../models/category");
+const subCategory = require("../models/subCategory");
+const brand = require("../models/brand");
 const {
   productSchema,
   categorySchema,
+  subCategorySchema,
+  brandSchema,
 } = require("../../validators/allValidator");
 
 exports.addProduct = async (req, res) => {
@@ -38,12 +42,10 @@ exports.getAlladdProduct = async (req, res) => {
   try {
     const { page, limit } = req.query;
     const skip = (page - 1) * 10;
-    const total = await product.find().countDocuments().lean();
     const getAll = await product.find().skip(skip).limit(limit);
     res.status(200).json({
       message: "Find all product",
       getAll,
-      totalproduct: total,
     });
   } catch (error) {
     return res.status(500).json({
@@ -76,7 +78,7 @@ exports.getOneProduct = async (req, res) => {
   }
 };
 
-exports.updateSubscription = async (req, res) => {
+exports.updateproduct = async (req, res) => {
   try {
     const { error } = productSchema.validate(req.body);
     if (error) {
@@ -150,12 +152,10 @@ exports.getAllcategory = async (req, res) => {
   try {
     const { page, limit } = req.query;
     const skip = (page - 1) * 10;
-    const total = await category.find().countDocuments().lean();
     const getAll = await category.find().skip(skip).limit(limit);
     res.status(200).json({
       message: "Find all category",
       getAll,
-      totalcategory: total,
     });
   } catch (error) {
     return res.status(500).json({
@@ -180,6 +180,104 @@ exports.getOnecategory = async (req, res) => {
         message: "no data",
       });
     }
+  } catch (error) {
+    return res.status(500).json({
+      status: 0,
+      message: error.toString(),
+    });
+  }
+};
+
+exports.addsubCategory = async (req, res) => {
+  try {
+    const data = req.body;
+    const { error } = subCategorySchema.validate(req.body);
+    if (error) {
+      res.status(400).send(error.details[0].message);
+      return;
+    } else {
+      const addProduct = await subCategory.create(data);
+      if (addProduct) {
+        return res.status(201).json({
+          status: 1,
+          message: "Add subCategory",
+        });
+      } else {
+        return res.status(400).json({
+          status: 0,
+          message: "not add",
+        });
+      }
+    }
+  } catch (error) {
+    return res.status(500).json({
+      status: 0,
+      message: error.toString(),
+    });
+  }
+};
+
+exports.getAllsubCategory = async (req, res) => {
+  try {
+    const { page, limit } = req.query;
+    const skip = (page - 1) * 10;
+    const total = await subCategory.find().countDocuments().lean();
+    const getAll = await subCategory
+      .find()
+      .skip(skip)
+      .limit(limit)
+      .populate("category");
+    res.status(200).json({
+      message: "Find all category",
+      getAll,
+      totalcategory: total,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 0,
+      message: error.toString(),
+    });
+  }
+};
+
+exports.addbrand = async (req, res) => {
+  try {
+    const data = req.body;
+    const { error } = brandSchema.validate(req.body);
+    if (error) {
+      res.status(400).send(error.details[0].message);
+      return;
+    } else {
+      const addProduct = await brand.create(data);
+      if (addProduct) {
+        return res.status(201).json({
+          status: 1,
+          message: "Add brand",
+        });
+      } else {
+        return res.status(400).json({
+          status: 0,
+          message: "not add",
+        });
+      }
+    }
+  } catch (error) {
+    return res.status(500).json({
+      status: 0,
+      message: error.toString(),
+    });
+  }
+};
+
+exports.getAllbrand = async (req, res) => {
+  try {
+    const { page, limit } = req.query;
+    const skip = (page - 1) * 10;
+    const getAll = await brand.find().skip(skip).limit(limit);
+    res.status(200).json({
+      message: "Find all brand",
+      getAll,
+    });
   } catch (error) {
     return res.status(500).json({
       status: 0,
