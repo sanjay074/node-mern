@@ -7,7 +7,8 @@ const productSchema = Joi.object({
   color: Joi.array().required(),
   size: Joi.array().required(),
   productCategory: Joi.string(),
-  productCategory: Joi.string(),
+  productSubCategory: Joi.string(),
+  brand: Joi.string(),
 });
 const categorySchema = Joi.object({
   categoryName: Joi.string().required(),

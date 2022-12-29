@@ -1,6 +1,7 @@
 const product = require("../models/product");
 const category = require("../models/category");
 const subCategory = require("../models/subCategory");
+import CustomErrorHandler from "../../services/CustomErrorHandler";
 const brand = require("../models/brand");
 const {
   productSchema,
@@ -38,15 +39,26 @@ exports.addProduct = async (req, res) => {
   }
 };
 
-exports.getAlladdProduct = async (req, res) => {
+exports.getAlladdProduct = async (req, res, next) => {
   try {
     const { page, limit } = req.query;
     const skip = (page - 1) * 10;
-    const getAll = await product.find().skip(skip).limit(limit);
-    res.status(200).json({
-      message: "Find all product",
-      getAll,
-    });
+    const getAll = await product
+      .find()
+      .skip(skip)
+      .limit(limit)
+      .populate("productCategory")
+      .populate("productSubCategory")
+      .populate("brand");
+    if (getAll[0]) {
+      return res.status(200).json({
+        status: 1,
+        message: "Find all product",
+        getAll,
+      });
+    } else {
+      return next(CustomErrorHandler.nodata("No data"));
+    }
   } catch (error) {
     return res.status(500).json({
       status: 0,
@@ -55,9 +67,13 @@ exports.getAlladdProduct = async (req, res) => {
   }
 };
 
-exports.getOneProduct = async (req, res) => {
+exports.getOneProduct = async (req, res, next) => {
   try {
-    const getOne = await product.findById(req.params.id);
+    const getOne = await product
+      .findById(req.params.id)
+      .populate("productCategory")
+      .populate("productSubCategory")
+      .populate("brand");
     if (getOne !== null) {
       return res.status(200).json({
         status: 1,
@@ -65,10 +81,7 @@ exports.getOneProduct = async (req, res) => {
         getOne,
       });
     } else {
-      return res.status(400).json({
-        status: 1,
-        message: "no data",
-      });
+      return next(CustomErrorHandler.nodata("No data"));
     }
   } catch (error) {
     return res.status(500).json({
@@ -148,15 +161,20 @@ exports.addcategory = async (req, res) => {
   }
 };
 
-exports.getAllcategory = async (req, res) => {
+exports.getAllcategory = async (req, res, next) => {
   try {
     const { page, limit } = req.query;
     const skip = (page - 1) * 10;
     const getAll = await category.find().skip(skip).limit(limit);
-    res.status(200).json({
-      message: "Find all category",
-      getAll,
-    });
+    if (getAll[0]) {
+      return res.status(200).json({
+        status: 1,
+        message: "Find all product category",
+        getAll,
+      });
+    } else {
+      return next(CustomErrorHandler.nodata("No data"));
+    }
   } catch (error) {
     return res.status(500).json({
       status: 0,
@@ -165,7 +183,7 @@ exports.getAllcategory = async (req, res) => {
   }
 };
 
-exports.getOnecategory = async (req, res) => {
+exports.getOnecategory = async (req, res, next) => {
   try {
     const getOne = await category.findById(req.params.id);
     if (getOne !== null) {
@@ -175,10 +193,7 @@ exports.getOnecategory = async (req, res) => {
         getOne,
       });
     } else {
-      return res.status(400).json({
-        status: 1,
-        message: "no data",
-      });
+      return next(CustomErrorHandler.nodata("No data"));
     }
   } catch (error) {
     return res.status(500).json({
@@ -217,7 +232,7 @@ exports.addsubCategory = async (req, res) => {
   }
 };
 
-exports.getAllsubCategory = async (req, res) => {
+exports.getAllsubCategory = async (req, res, next) => {
   try {
     const { page, limit } = req.query;
     const skip = (page - 1) * 10;
@@ -227,11 +242,15 @@ exports.getAllsubCategory = async (req, res) => {
       .skip(skip)
       .limit(limit)
       .populate("category");
-    res.status(200).json({
-      message: "Find all category",
-      getAll,
-      totalcategory: total,
-    });
+    if (getAll[0]) {
+      return res.status(200).json({
+        status: 1,
+        message: "Find all product category",
+        getAll,
+      });
+    } else {
+      return next(CustomErrorHandler.nodata("No data"));
+    }
   } catch (error) {
     return res.status(500).json({
       status: 0,
@@ -269,15 +288,20 @@ exports.addbrand = async (req, res) => {
   }
 };
 
-exports.getAllbrand = async (req, res) => {
+exports.getAllbrand = async (req, res, next) => {
   try {
     const { page, limit } = req.query;
     const skip = (page - 1) * 10;
     const getAll = await brand.find().skip(skip).limit(limit);
-    res.status(200).json({
-      message: "Find all brand",
-      getAll,
-    });
+    if (getAll[0]) {
+      return res.status(200).json({
+        status: 1,
+        message: "Find all product category",
+        getAll,
+      });
+    } else {
+      return next(CustomErrorHandler.nodata("No data"));
+    }
   } catch (error) {
     return res.status(500).json({
       status: 0,
