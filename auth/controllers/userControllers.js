@@ -285,3 +285,16 @@ exports.getAllbrand = async (req, res) => {
     });
   }
 };
+
+exports.getProductBySubCategory = async (req, res) => {
+  try {
+    console.log(req.params.key);
+    const findCategory = await subCategory.find({
+      $or: [{ categoryId: { $regex: req.params.key } }],
+    });
+    res.status(200).json(findCategory);
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
+};
